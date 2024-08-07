@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 class EventDetail {
   DateTime createdAt;
   String title;

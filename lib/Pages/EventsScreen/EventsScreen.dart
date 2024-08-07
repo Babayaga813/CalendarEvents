@@ -8,7 +8,6 @@ import 'package:scheduler/Helpers/Utilities/utilities.dart';
 import 'package:scheduler/cubit/date_selection_cubit.dart';
 import 'package:scheduler/cubit/day_events_cubit.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'dart:math';
 import '../../BOs/EventDetailBO.dart';
 
 class EventsScreen extends StatefulWidget {
