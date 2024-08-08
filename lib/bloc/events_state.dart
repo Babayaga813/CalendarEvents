@@ -8,3 +8,8 @@ final class EventsInitial extends EventsState {}
 final class EventsFetching extends EventsState {}
 
 final class EventsFetched extends EventsState {}
+
+final class ErrorOnFetch extends EventsState {
+  final String error;
+  ErrorOnFetch({required this.error});
+}

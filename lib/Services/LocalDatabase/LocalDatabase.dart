@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
+import 'package:scheduler/Helpers/ServiceResult/ServiceResult.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import '../../BOs/EventDetailBO.dart';
@@ -89,17 +90,36 @@ class LocalDatabase {
   }
 
   // Retrieve all events from the database
-  Future<List<EventDetail>> getEvents() async {
+  Future<ServiceResult<List<EventDetail>>> getEvents() async {
     try {
       final db = await database;
       final List<Map<String, dynamic>> maps = await db.query('events');
-      return List.generate(maps.length, (i) {
-        return EventDetail.fromMap(maps[i]);
-      });
+      if (maps.isEmpty) {
+        return ServiceResult(
+            statusCode: StatusCode.noContent,
+            data: [],
+            message: "No Data Found");
+      } else if (maps.isNotEmpty) {
+        return ServiceResult(
+            statusCode: StatusCode.ok,
+            data: List.generate(maps.length, (i) {
+              return EventDetail.fromMap(maps[i]);
+            }),
+            message: "No Data Found");
+      } else {
+        return ServiceResult(
+            statusCode: StatusCode.expectationFailed,
+            data: null,
+            message: "unable to fetch data");
+      }
     } catch (e) {
       // Handle any errors that occur during the retrieval operation
       debugPrint('Error retrieving events: $e');
-      return []; // Return an empty list if an error occurs
+      return ServiceResult(
+          statusCode: StatusCode.expectationFailed,
+          data: null,
+          message:
+              "Exception caught ${e.toString()}"); // Return an empty list if an error occurs
     }
   }
 }

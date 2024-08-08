@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
               BlocProvider(create: (context) => EventsBloc())
             ],
             child: MaterialApp.router(
-              title: 'Code Buddy',
+              title: 'Event Scheduler',
               debugShowCheckedModeBanner: false,
               routerConfig: AppRoutes().routes,
               theme: CustomThemes.lightMode,

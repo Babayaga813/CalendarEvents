@@ -21,46 +21,52 @@ class EventsBloc extends Bloc<EventsEvent, EventsState> {
     // Handling FetchEvents event
     on<FetchEvents>((event, emit) async {
       try {
-        // Emitting fetching state
-        emit(EventsFetching());
-
-        // Retrieve events from local database
-        var data = await dbservice.getEvents();
-
-        // Check if data is empty, which means a network call is needed
-        if (data.isEmpty) {
-          // Fetch events from API
-          var apiResponse = await service.getEventDetails();
-          print("API call made");
-
-          // Check if API response is successful
-          if (apiResponse.statusCode == StatusCode.ok) {
-            // Insert events into local database
-            await dbservice.insertEvents(apiResponse.data!);
-          } else {
-            // Handle unsuccessful API response
-            print(
-                "API call failed with status code: ${apiResponse.statusCode}");
-            // emit(EventsFetchFailed(error: "API call failed"));
-            return;
-          }
-        } else {
-          // If data is not empty, use the local data
-          print("API call not done ");
-          AppConstants.events = data;
-          AppConstants.todayEvents = data.where((event) {
-            return event.startAt.toFormattedDateString() ==
-                DateTime.now().toFormattedDateString();
-          }).toList();
-        }
-
-        // Emitting fetched state
-        emit(EventsFetched());
+        _fetchDataFromLocalDB(event, emit);
       } catch (e) {
-        // Handle any errors that occur during fetching
-        print('Error fetching events: $e');
-        // emit(EventsFetchFailed(error: e.toString()));
+        emit(ErrorOnFetch(error: e.toString()));
       }
     });
+  }
+
+  Future<void> _fetchDataFromLocalDB(event, emit) async {
+    // Emitting fetching state
+    emit(EventsFetching());
+
+    // Retrieve events from local database
+    var data = await dbservice.getEvents();
+
+    // Check if data is empty, which means a network call is needed
+    if (data.statusCode == StatusCode.noContent) {
+      // Fetch events from API
+      var apiResponse = await service.getEventDetails();
+
+      // Check if API response is successful
+      if (apiResponse.statusCode == StatusCode.ok) {
+        // Insert events into local database
+        await dbservice.insertEvents(apiResponse.data!);
+
+        emit(EventsFetched());
+      } else {
+        // Handle unsuccessful API response
+        emit(ErrorOnFetch(
+            error: "Failed to insert data into DB but API was success"));
+        // emit(EventsFetchFailed(error: "API call failed"));
+        return;
+      }
+    } else if (data.statusCode == StatusCode.ok) {
+      // If data is not empty, use the local data
+
+      AppConstants.events = data.data!;
+      AppConstants.todayEvents = data.data!.where((event) {
+        return event.startAt.toFormattedDateString() ==
+            DateTime.now().toFormattedDateString();
+      }).toList();
+
+      emit(EventsFetched());
+    } else {
+      emit(ErrorOnFetch(error: data.message));
+    }
+
+    // Emitting fetched state
   }
 }

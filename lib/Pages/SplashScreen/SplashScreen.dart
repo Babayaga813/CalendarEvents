@@ -20,21 +20,11 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
 
-    _fetchEventsIfMounted();
-  }
-
-  Future<void> _fetchEventsIfMounted() async {
-    try {
-      // Simulate some async operation
-      await Future.delayed(const Duration(milliseconds: 1500));
-
-      // Ensure the widget is still mounted before making the call
+    Future.delayed(const Duration(milliseconds: 1500), () {
       if (mounted) {
         context.read<EventsBloc>().add(FetchEvents());
       }
-    } catch (e) {
-      debugPrint(e.toString());
-    }
+    });
   }
 
   @override
@@ -63,6 +53,9 @@ class _SplashScreenState extends State<SplashScreen> {
                   isLoading = false;
                   GoRouter.of(context).pushReplacementNamed(
                       AppRouteConstants.dateSelectionRoute);
+                } else if (state is ErrorOnFetch) {
+                  GoRouter.of(context)
+                      .pushReplacementNamed(AppRouteConstants.errorRoute);
                 }
               },
               builder: (context, state) {
