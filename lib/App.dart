@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:scheduler/Helpers/Styles/Style.dart';
+import 'package:scheduler/bloc/events_bloc.dart';
 import 'package:scheduler/cubit/date_selection_cubit.dart';
 import 'package:scheduler/cubit/day_events_cubit.dart';
 import 'Helpers/Navigation/AppRoutes.dart';
@@ -23,6 +24,7 @@ class MyApp extends StatelessWidget {
               BlocProvider(
                 create: (context) => DayEventsCubit(),
               ),
+              BlocProvider(create: (context) => EventsBloc())
             ],
             child: MaterialApp.router(
               title: 'Code Buddy',

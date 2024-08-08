@@ -12,7 +12,34 @@ extension DateTimeFormatting on DateTime {
 
   String dateToString() {
     final DateFormat formatter = DateFormat('d MMMM yyyy');
-    return formatter.format(this);
+    final String formattedDate = formatter.format(this);
+    final String day = DateFormat('d').format(this);
+    final String dayWithSuffix = _addOrdinalSuffix(int.parse(day));
+
+    // Replace the day in the formatted date with the day and suffix
+    return formattedDate.replaceFirst(day, dayWithSuffix);
+  }
+
+  String _addOrdinalSuffix(int day) {
+    if (day >= 11 && day <= 13) {
+      return '${day}th';
+    }
+    switch (day % 10) {
+      case 1:
+        return '${day}st';
+      case 2:
+        return '${day}nd';
+      case 3:
+        return '${day}rd';
+      default:
+        return '${day}th';
+    }
+  }
+}
+
+extension StringCasingExtension on String {
+  String capitalize() {
+    return '${this[0].toUpperCase()}${this.substring(1)}';
   }
 }
 
@@ -55,4 +82,12 @@ Color getStatusColor(EventDetail event) {
   return event.status == "Confirmed"
       ? const Color(0xff9DDBA1)
       : const Color(0xffFDA4A4);
+}
+
+List<DateTime> daysInRange(DateTime first, DateTime last) {
+  final dayCount = last.difference(first).inDays + 1;
+  return List.generate(
+    dayCount,
+    (index) => DateTime.utc(first.year, first.month, first.day + index),
+  );
 }

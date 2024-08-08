@@ -23,7 +23,6 @@ class EventsService {
         for (var element in jsonDecodedData["data"]) {
           var event = EventDetail.fromJson(element);
           data.add(event);
-          print(event.startAt.toFormattedDateString());
         }
 
         AppConstants.events = data;
@@ -34,7 +33,7 @@ class EventsService {
         }).toList();
 
         return ServiceResult(
-            statusCode: StatusCode.accepted, data: data, message: "message");
+            statusCode: StatusCode.ok, data: data, message: "message");
       } else {
         return ServiceResult(
             statusCode: StatusCode.badRequest,

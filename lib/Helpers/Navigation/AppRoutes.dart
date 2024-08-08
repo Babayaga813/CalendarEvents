@@ -24,12 +24,23 @@ class AppRoutes {
         },
       ),
       GoRoute(
-        path: "/event/:EventDetail",
+        path: "/event",
         name: AppRouteConstants.eventDetailsRoute,
         pageBuilder: (context, state) {
+          final data = state.extra as EventDetail;
+          // EventDetail detail = EventDetail(
+          //     createdAt: DateTime(2023, 10, 10),
+          //     title: "iure",
+          //     description:
+          //         "Accusantium voluptatibus minus commodi quasi. Expedita voluptate fugiat quo amet labore fugiat quia accusamus. Libero fugiat consequuntur adipisci culpa. Dolorum dignissimos nemo facilis in aperiam inventore nisi perferendis.",
+          //     status: "Cancelled",
+          //     startAt: DateTime(2024, 08, 22),
+          //     duration: 75,
+          //     id: "7e3d6ee0fdb62c2efeb85ecf",
+          //     images: ["https://loremflickr/640/480/nature"]);
           return CupertinoPage(
               child: EventDetailsScreen(
-            eventDetail: state.pathParameters["EventDetail"] as EventDetail,
+            eventDetail: data,
           ));
         },
       ),

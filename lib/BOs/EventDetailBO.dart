@@ -49,4 +49,32 @@ class EventDetail {
       'images': images,
     };
   }
+
+  // Convert Map to EventDetail object
+  factory EventDetail.fromMap(Map<String, dynamic> map) {
+    return EventDetail(
+      createdAt: DateTime.parse(map['createdAt']),
+      title: map['title'],
+      description: map['description'],
+      status: map['status'],
+      startAt: DateTime.parse(map['startAt']),
+      duration: map['duration'],
+      id: map['id'],
+      images: (map['images'] as String).split(','),
+    );
+  }
+
+  // Convert EventDetail object to Map
+  Map<String, dynamic> toMap() {
+    return {
+      'createdAt': createdAt.toIso8601String(),
+      'title': title,
+      'description': description,
+      'status': status,
+      'startAt': startAt.toIso8601String(),
+      'duration': duration,
+      'id': id,
+      'images': images.join(','), // Convert list to comma-separated string
+    };
+  }
 }
